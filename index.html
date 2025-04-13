@@ -2,87 +2,124 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Date Ideas">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="color-scheme" content="dark light">
     <title>Date Ideas</title>
     <!-- Google Font for mobile screens -->
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-
     <style>
+        /* Define CSS Variables for light mode */
+        :root {
+            --background: #FFF7F9;
+            --container-bg: #ffffff;
+            --text-color: #333;
+            --accent-color: #ff69b4;
+            --header-bg: linear-gradient(90deg, #FFC1CC, #FFB7CE);
+            --box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Define Dark mode variables; these will be applied when .dark-mode is on body */
+        body.dark-mode {
+            --background: #121212;
+            --container-bg: #1e1e1e;
+            --text-color: #f0f0f0;
+            --accent-color: #ff79c6;
+            --header-bg: linear-gradient(90deg, #d23669, #b82a58);
+            --box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Global styles */
         body {
             font-family: 'Comic Sans MS', cursive, sans-serif;
-            background: #FFF7F9;
+            background: var(--background);
+            color: var(--text-color);
             margin: 0;
             padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: background 0.3s, color 0.3s;
+            position: relative;
         }
-        /* On small screens, use Baloo 2 for a more solid appearance */
+
+        /* For small screens, use Baloo 2 instead of Comic Sans MS */
         @media (max-width: 480px) {
             body {
                 font-family: 'Baloo 2', cursive, sans-serif;
             }
         }
+
         header {
-            background: linear-gradient(90deg, #FFC1CC, #FFB7CE);
+            background: var(--header-bg);
             width: 100%;
             padding: 30px 0;
             color: #fff;
             text-align: center;
             margin-bottom: 30px;
             box-shadow: 0 4px 8px rgba(255, 182, 193, 0.5);
+            transition: background 0.3s;
         }
+
         h1 {
             font-size: 2.5em;
             margin: 0;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
+
         .container {
             max-width: 600px;
             width: 100%;
-            background: #ffffff;
+            background: var(--container-bg);
             padding: 20px;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--box-shadow);
             border-radius: 20px;
             margin-bottom: 20px;
+            transition: background 0.3s, box-shadow 0.3s;
         }
+
         form {
             margin-bottom: 20px;
         }
+
         label {
             display: block;
             margin-top: 10px;
             font-weight: bold;
-            color: #ff69b4;
+            color: var(--accent-color);
         }
+
         input[type="text"],
         textarea {
             width: 100%;
             padding: 10px;
             margin-top: 5px;
             box-sizing: border-box;
-            border: 2px solid #ffcccb;
+            border: 2px solid var(--accent-color);
             border-radius: 10px;
-            background: #FFF0F5;
+            background: var(--background);
+            color: var(--text-color);
         }
+
         input[type="range"] {
             width: 100%;
         }
+
         .slider-labels {
             text-align: center;
             font-size: 1.2em;
             margin-top: 5px;
             margin-bottom: 10px;
-            color: #ff69b4;
+            color: var(--accent-color);
         }
+
         button {
             padding: 10px 20px;
             margin-top: 15px;
-            background-color: #ffb6c1;
+            background-color: var(--accent-color);
             color: #fff;
             border: none;
             border-radius: 20px;
@@ -91,44 +128,70 @@
             box-shadow: 0 2px 4px rgba(255, 105, 180, 0.5);
             transition: background-color 0.3s, transform 0.2s;
         }
+
         button:hover {
             background-color: #ff69b4;
             transform: scale(1.05);
         }
-        /* Each idea is displayed as a flex row */
+
+        /* Each idea displayed as a flex row */
         .idea {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px dashed #ffcccb;
+            border-bottom: 1px dashed var(--accent-color);
             padding: 10px 0;
             margin-bottom: 10px;
         }
+
         .info {
             display: flex;
             flex-direction: column;
         }
+
         .scores {
             font-size: 0.9em;
-            color: #ff69b4;
+            color: var(--accent-color);
         }
+
         .delete-button {
             background-color: transparent;
-            border: 2px solid #ff69b4;
+            border: 2px solid var(--accent-color);
             border-radius: 5px;
-            color: #ff69b4;
+            color: var(--accent-color);
             font-weight: bold;
             cursor: pointer;
             padding: 5px 10px;
             transition: background-color 0.2s;
         }
+
         .delete-button:hover {
-            background-color: #ff69b4;
+            background-color: var(--accent-color);
             color: #fff;
+        }
+
+        /* Dark mode toggle icon styled as a small button in the top-right corner */
+        .theme-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent-color);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.5em;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            transition: background 0.3s;
         }
     </style>
 </head>
 <body>
+<!-- Dark mode toggle icon -->
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+
 <header>
     <h1>Date Ideas Hub</h1>
 </header>
@@ -190,7 +253,7 @@
                oninput="document.getElementById('searchEnergyOutput').textContent = '⚡'.repeat(this.value)">
         <div class="slider-labels" id="searchEnergyOutput">⚡⚡⚡</div>
 
-        <!-- Time of Day slider for search: only day or night (step 2) -->
+        <!-- Time of Day slider for search: only day or night (step of 2) -->
         <label for="searchTimeOfDay">Preferred Time of Day:</label>
         <input type="range" id="searchTimeOfDay" min="1" max="3" step="2" value="3"
                oninput="document.getElementById('searchTimeOfDayOutput').textContent = getTimeOfDayEmoji(this.value)">
@@ -206,22 +269,22 @@
 </div>
 
 <script>
-    // Function mapping slider values to "Time of Day" emojis:
-    // 1 → 🌙, 2 → ❓, 3 → ☀️.
+    // Function to map "Time of Day" slider values to emojis:
+    // 1 → Night (🌙), 2 → Not Important (❓), 3 → Day (☀️).
     function getTimeOfDayEmoji(value) {
         const val = parseInt(value, 10);
         switch (val) {
-            case 1: return '🌙'; // Night
-            case 2: return '❓'; // Not Important
-            case 3: return '☀️'; // Day
+            case 1: return '🌙';
+            case 2: return '❓';
+            case 3: return '☀️';
             default: return '❓';
         }
     }
 
-    // Store date ideas (each idea's ratings are numeric values).
+    // Load stored date ideas (ratings stored as numbers).
     let dateIdeas = [];
 
-    // Function to display the list of ideas.
+    // Function to display ideas.
     function displayIdeas(ideas) {
         const ideasList = document.getElementById("ideasList");
         ideasList.innerHTML = "";
@@ -230,11 +293,10 @@
             return;
         }
         ideas.forEach((idea, index) => {
-            // Create the main container for each idea (flex row).
             const ideaDiv = document.createElement("div");
             ideaDiv.className = "idea";
 
-            // Left side: Title, scores, and time of day.
+            // Create info section with title, scores, and time of day.
             const infoDiv = document.createElement("div");
             infoDiv.className = "info";
             infoDiv.innerHTML = `
@@ -247,12 +309,13 @@
           </div>
         `;
 
-            // Right side: Delete button.
+            // Create delete button.
             const deleteButton = document.createElement("button");
             deleteButton.className = "delete-button";
             deleteButton.textContent = "X";
             deleteButton.onclick = () => deleteIdea(index);
 
+            // Append elements.
             ideaDiv.appendChild(infoDiv);
             ideaDiv.appendChild(deleteButton);
             ideasList.appendChild(ideaDiv);
@@ -270,7 +333,7 @@
             .catch(error => console.error('Error loading ideas:', error));
     }
 
-    // Load ideas when the page loads.
+    // Load ideas on page load.
     window.addEventListener('load', loadIdeas);
 
     // Handle idea creation.
@@ -284,7 +347,6 @@
 
         const newIdea = { title, money, time, energy, timeOfDay };
 
-        // Send the new idea to the server.
         fetch('save_date_ideas.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -297,7 +359,6 @@
                     displayIdeas(dateIdeas);
                     alert("Date idea added!");
                     document.getElementById("ideaForm").reset();
-                    // Reset slider outputs to their default values.
                     document.getElementById("moneyOutput").textContent = '💰'.repeat(3);
                     document.getElementById("timeOutput").textContent = '⏳'.repeat(3);
                     document.getElementById("energyOutput").textContent = '⚡'.repeat(3);
@@ -338,9 +399,6 @@
         const availableEnergy = parseInt(document.getElementById("searchEnergy").value, 10);
         const searchTimeOfDay = parseInt(document.getElementById("searchTimeOfDay").value, 10);
 
-        // Filter: ideas must meet money, time, and energy criteria.
-        // For time of day, always show ideas where the idea value is 2 ("Not Important"),
-        // otherwise, the idea's timeOfDay must equal the search slider value (1 or 3).
         const filteredIdeas = dateIdeas.filter(idea =>
             idea.money <= availableMoney &&
             idea.time <= availableTime &&
@@ -349,6 +407,48 @@
         );
         displayIdeas(filteredIdeas);
     });
+
+    // Dark mode toggle functionality.
+    function toggleTheme() {
+        if (document.body.classList.contains('dark-mode')) {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('theme', 'light');
+            document.getElementById('themeToggle').textContent = "🌙";
+        } else {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('theme', 'dark');
+            document.getElementById('themeToggle').textContent = "☀️";
+        }
+    }
+
+    // On page load, check user preference: if saved in localStorage, use that. Otherwise, use browser preference.
+    function setInitialTheme() {
+        const storedTheme = localStorage.getItem('theme');
+        if (storedTheme) {
+            if (storedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('themeToggle').textContent = "☀️";
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.getElementById('themeToggle').textContent = "🌙";
+            }
+        } else {
+            // Use browser preference.
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (prefersDark) {
+                document.body.classList.add('dark-mode');
+                document.getElementById('themeToggle').textContent = "☀️";
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.getElementById('themeToggle').textContent = "🌙";
+                localStorage.setItem('theme', 'light');
+            }
+        }
+    }
+
+    // Run initial theme setting.
+    setInitialTheme();
 </script>
 </body>
 </html>
