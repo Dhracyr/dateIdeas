@@ -4,11 +4,33 @@
   <meta charset="UTF-8">
   <title>Login - Date Ideas</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Fade-out effect */
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+    .fade-out {
+      animation: fadeOut 1s forwards;
+    }
+    /* Shake effect for errors */
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-10px); }
+      40% { transform: translateX(10px); }
+      60% { transform: translateX(-10px); }
+      80% { transform: translateX(10px); }
+      100% { transform: translateX(0); }
+    }
+    .shake {
+      animation: shake 0.5s;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
+<div class="container" id="loginContainer">
   <h2>Login</h2>
-  <form action="login.php" method="POST">
+  <form id="loginForm">
     <label for="username">Username:</label>
     <input type="text" id="username" name="username" required>
 
@@ -17,7 +39,41 @@
 
     <button type="submit">Login</button>
   </form>
+  <div id="loginMessage"></div>
   <p>Don't have an account? <a href="register.html">Register here</a>.</p>
 </div>
+<script>
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Create form data to send to login.php.
+    const formData = new FormData(this);
+
+    fetch('login.php', {
+      method: 'POST',
+      body: formData
+    })
+            .then(response => response.json())
+            .then(result => {
+              const messageEl = document.getElementById('loginMessage');
+              const container = document.getElementById('loginContainer');
+              if (result.status === 'success') {
+                messageEl.textContent = 'Login successful!';
+                container.classList.add('fade-out');
+                // After fade-out, redirect to index.php.
+                setTimeout(() => {
+                  window.location.href = 'index.php';
+                }, 1500);
+              } else {
+                messageEl.textContent = 'Error: ' + result.message;
+                // Apply shake effect to show error.
+                container.classList.add('shake');
+                setTimeout(() => container.classList.remove('shake'), 500);
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+  });
+</script>
 </body>
 </html>

@@ -4,11 +4,33 @@
   <meta charset="UTF-8">
   <title>Register - Date Ideas</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Fade-out effect */
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+    .fade-out {
+      animation: fadeOut 1s forwards;
+    }
+    /* Shake effect for error */
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-10px); }
+      40% { transform: translateX(10px); }
+      60% { transform: translateX(-10px); }
+      80% { transform: translateX(10px); }
+      100% { transform: translateX(0); }
+    }
+    .shake {
+      animation: shake 0.5s;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
+<div class="container" id="registerContainer">
   <h2>Register</h2>
-  <form action="register.php" method="POST">
+  <form id="registerForm">
     <label for="username">Username:</label>
     <input type="text" id="username" name="username" required>
 
@@ -17,7 +39,43 @@
 
     <button type="submit">Register</button>
   </form>
+  <div id="message"></div>
   <p>Already have an account? <a href="login.html">Login here</a>.</p>
 </div>
+<script>
+  document.getElementById('registerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Create form data to send to register.php.
+    const formData = new FormData(this);
+
+    fetch('register.php', {
+      method: 'POST',
+      body: formData
+    })
+            .then(response => response.json())
+            .then(result => {
+              const messageEl = document.getElementById('message');
+              const container = document.getElementById('registerContainer');
+              if(result.status === 'success'){
+                messageEl.textContent = 'Registration successful!';
+                // Apply fade-out animation.
+                container.classList.add('fade-out');
+                // Automatically redirect to login page after animation.
+                setTimeout(() => {
+                  window.location.href = 'login.html';
+                }, 1500);
+              } else {
+                messageEl.textContent = 'Error: ' + result.message;
+                // Apply a shake animation to indicate error.
+                container.classList.add('shake');
+                setTimeout(() => container.classList.remove('shake'), 500);
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+  });
+</script>
 </body>
 </html>
