@@ -90,10 +90,100 @@ textarea {
     color: var(--text-color);
 }
 
+/* Updated Slider Styling for a Cuter/Kawaii Look */
+
+/* Slider Track */
 input[type="range"] {
+    -webkit-appearance: none;
     width: 100%;
+    height: 16px; /* Increased track height */
+    border-radius: 8px;
+    background: #ffe6f0; /* Light pastel pink */
+    outline: none;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+    margin: 10px 0;
 }
 
+input[type="range"]:hover {
+    opacity: 1;
+}
+
+/* WebKit Browsers (Chrome, Safari, Opera) */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #ffb7ce;
+    border: 3px solid #ff69b4;
+    cursor: pointer;
+    /* Adjusted margin-top to position the circle lower and center it */
+    margin-top: 0px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    background: #ffa6b9;
+}
+
+/* Mozilla Firefox */
+input[type="range"]::-moz-range-thumb {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #ffb7ce;
+    border: 3px solid #ff69b4;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+    background: #ffa6b9;
+}
+
+input[type="range"]::-moz-range-track {
+    height: 16px;
+    border-radius: 8px;
+    background: #ffe6f0;
+}
+
+/* Internet Explorer/Edge */
+input[type="range"]::-ms-thumb {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #ffb7ce;
+    border: 3px solid #ff69b4;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    transition: background 0.2s ease, transform 0.2s ease;
+    /* IE may not support margin-top on the thumb, but the effect is similar */
+}
+
+input[type="range"]::-ms-track {
+    width: 100%;
+    height: 16px;
+    border-radius: 8px;
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+}
+
+input[type="range"]::-ms-fill-lower {
+    background: #ffe6f0;
+    border-radius: 8px;
+}
+
+input[type="range"]::-ms-fill-upper {
+    background: #ffe6f0;
+    border-radius: 8px;
+}
+
+/* Slider Labels */
 .slider-labels {
     text-align: center;
     font-size: 1.2em;
@@ -102,6 +192,7 @@ input[type="range"] {
     color: var(--accent-color);
 }
 
+/* Button Styling */
 button {
     padding: 10px 20px;
     margin-top: 15px;
@@ -120,7 +211,7 @@ button:hover {
     transform: scale(1.05);
 }
 
-/* Each idea displayed as a flex row */
+/* Displaying Each Idea */
 .idea {
     display: flex;
     justify-content: space-between;
@@ -140,6 +231,7 @@ button:hover {
     color: var(--accent-color);
 }
 
+/* Delete Button for Each Idea */
 .delete-button {
     background-color: transparent;
     border: 2px solid var(--accent-color);
@@ -156,7 +248,7 @@ button:hover {
     color: #fff;
 }
 
-/* Dark mode toggle button (top-right corner) */
+/* Dark Mode Toggle Button (top-right corner) */
 .theme-toggle {
     position: absolute;
     top: 10px;
