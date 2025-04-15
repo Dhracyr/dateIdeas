@@ -48,7 +48,7 @@ function displayIdeas(ideas = []) {
         const deleteButton = document.createElement("button");
         deleteButton.className = "delete-button";
         deleteButton.textContent = "X";
-        deleteButton.onclick = () => deleteIdea(idea.id);
+        deleteButton.setAttribute("data-idea-id", idea.id)
 
         ideaDiv.appendChild(infoDiv);
         ideaDiv.appendChild(deleteButton);
@@ -169,6 +169,17 @@ document.getElementById("searchForm").addEventListener("submit", function(e) {
     displayIdeas(filteredIdeas);
 });
 
+document.getElementById("ideasList").addEventListener("click", function(e) {
+    // Check if a delete button was clicked.
+    if (e.target && e.target.classList.contains("delete-button")) {
+        // Retrieve the idea id from a data attribute set on the button.
+        const ideaId = e.target.getAttribute("data-idea-id");
+        if (ideaId) {
+            // Defer the deletion call to allow the click handler to complete faster.
+            setTimeout(() => deleteIdea(ideaId), 0);
+        }
+    }
+});
 // Dark mode toggle functionality.
 function toggleTheme() {
     if (document.body.classList.contains('dark-mode')) {
