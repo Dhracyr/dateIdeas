@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $userId = $_SESSION['user_id'];
-$stmt = $pdo->prepare("SELECT title, money, time, energy, timeOfDay FROM ideas WHERE user_id = ?");
+$stmt = $pdo->prepare("SELECT id, title, money, time, energy, timeOfDay FROM ideas WHERE user_id = ?");
 $stmt->execute([$userId]);
 
 // Fetch all ideas as an associative array.

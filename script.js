@@ -22,8 +22,7 @@ function displayIdeas(ideas = []) {
     const ideasList = document.getElementById("ideasList");
     ideasList.innerHTML = "";
 
-    // Use optional chaining or a default with || to avoid errors.
-    if ((ideas || []).length === 0) {
+    if (ideas.length === 0) {
         ideasList.innerHTML = "<p>No ideas found matching your criteria.</p>";
         return;
     }
@@ -122,13 +121,13 @@ document.getElementById("ideaForm").addEventListener("submit", function(e) {
 });
 
 // Handle deletion of an idea.
-function deleteIdea(index) {
+function deleteIdea(id) {
     if (!confirm("Are you sure you want to delete this idea?")) return;
 
     fetch('delete_date_idea.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ index: index })
+        body: JSON.stringify({ idea_id: id })
     })
         .then(response => response.json())
         .then(result => {
