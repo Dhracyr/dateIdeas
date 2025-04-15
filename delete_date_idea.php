@@ -1,42 +1,46 @@
 <?php
-header('Content-Type: application/json');
-$file = 'date_ideas.json';
+session_start();
+require 'db_connect.php';
 
-// Read POST input.
-$input = json_decode(file_get_contents('php://input'), true);
-
-if (!isset($input['index'])) {
-    echo json_encode(["status" => "error", "message" => "No index provided"]);
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(['status' => 'error', 'message' => 'User not logged in.']);
     exit;
 }
 
-$index = intval($input['index']);
+$userId = $_SESSION['user_id'];
+$data = json_decode(file_get_contents('php://input'), true);
 
-// Load the existing ideas.
-if (file_exists($file)) {
-    $data = file_get_contents($file);
-    $ideas = json_decode($data, true);
-    if (!is_array($ideas)) {
-        $ideas = [];
-    }
+if (!isset($data['index'])) {
+    echo json_encode(['status' => 'error', 'message' => 'Idea index not provided.']);
+    exit;
+}
+
+$index = $data['index'];
+
+// Retrieve the current ideas for the user.
+$stmt = $pdo->prepare('SELECT ideas FROM users WHERE id = ?');
+$stmt->execute([$userId]);
+$row = $stmt->fetch();
+
+$currentIdeas = json_decode($row['ideas'], true);
+if (!is_array($currentIdeas)) {
+    $currentIdeas = [];
+}
+
+// Check if the idea exists at the given index.
+if (!isset($currentIdeas[$index])) {
+    echo json_encode(['status' => 'error', 'message' => 'Idea not found.']);
+    exit;
+}
+
+// Remove the idea using the provided index.
+array_splice($currentIdeas, $index, 1);
+
+// Update the database with the new ideas.
+$stmt = $pdo->prepare('UPDATE users SET ideas = ? WHERE id = ?');
+if ($stmt->execute([json_encode($currentIdeas), $userId])) {
+    echo json_encode(['status' => 'success', 'ideas' => $currentIdeas]);
 } else {
-    echo json_encode(["status" => "error", "message" => "Data file not found"]);
-    exit;
-}
-
-// Check index boundaries.
-if ($index < 0 || $index >= count($ideas)) {
-    echo json_encode(["status" => "error", "message" => "Invalid index"]);
-    exit;
-}
-
-// Remove the idea from the array.
-array_splice($ideas, $index, 1);
-
-// Write the updated ideas back to the JSON file.
-if (file_put_contents($file, json_encode($ideas, JSON_PRETTY_PRINT))) {
-    echo json_encode(["status" => "success", "ideas" => $ideas]);
-} else {
-    echo json_encode(["status" => "error", "message" => "Unable to update data"]);
+    echo json_encode(['status' => 'error', 'message' => 'Failed to update ideas.']);
 }
 ?>

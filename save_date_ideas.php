@@ -1,35 +1,25 @@
 <?php
-header('Content-Type: application/json');
-$file = 'date_ideas.json';
+session_start();
+require 'db_connect.php';
 
-// Get POST data
+$userId = $_SESSION['user_id'];
 $newIdea = json_decode(file_get_contents('php://input'), true);
 
-if (!$newIdea) {
-    echo json_encode(["status" => "error", "message" => "Invalid data"]);
-    exit;
+// Retrieve current ideas
+$stmt = $pdo->prepare('SELECT ideas FROM users WHERE id = ?');
+$stmt->execute([$userId]);
+$row = $stmt->fetch();
+$currentIdeas = json_decode($row['ideas'], true);
+if (!$currentIdeas) {
+    $currentIdeas = [];
 }
+$currentIdeas[] = $newIdea;
 
-// Check if the file exists and load existing ideas
-if (file_exists($file)) {
-    $data = file_get_contents($file);
-    $ideas = json_decode($data, true);
-
-    // In case the file content is not a valid JSON array
-    if (!is_array($ideas)) {
-        $ideas = [];
-    }
+// Update the user record with new ideas
+$stmt = $pdo->prepare('UPDATE users SET ideas = ? WHERE id = ?');
+if ($stmt->execute([json_encode($currentIdeas), $userId])) {
+    echo json_encode(['status' => 'success', 'ideas' => $currentIdeas]);
 } else {
-    $ideas = [];
-}
-
-// Append the new idea to the list
-$ideas[] = $newIdea;
-
-// Save the updated list back to the file
-if (file_put_contents($file, json_encode($ideas, JSON_PRETTY_PRINT))) {
-    echo json_encode(["status" => "success", "ideas" => $ideas]);
-} else {
-    echo json_encode(["status" => "error", "message" => "Unable to save data"]);
+    echo json_encode(['status' => 'error', 'message' => 'Failed to update ideas.']);
 }
 ?>
