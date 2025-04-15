@@ -28,20 +28,23 @@
   </style>
 </head>
 <body>
-<div class="container" id="loginContainer">
-  <h2>Login</h2>
-  <form id="loginForm">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required>
+  <!-- Dark Mode Toggle Button -->
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
+  <div class="container" id="loginContainer">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required>
 
-    <button type="submit">Login</button>
-  </form>
-  <div id="loginMessage"></div>
-  <p>Don't have an account? <a href="register.html">Register here</a>.</p>
-</div>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+
+      <button type="submit">Login</button>
+    </form>
+    <div id="loginMessage"></div>
+    <p>Don't have an account? <a href="register.html">Register here</a>.</p>
+  </div>
 <script>
   document.getElementById('loginForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -74,6 +77,46 @@
               console.error('Error:', error);
             });
   });
+</script>
+<script>
+  function toggleTheme() {
+    if (document.body.classList.contains('dark-mode')) {
+      document.body.classList.remove('dark-mode');
+      localStorage.setItem('theme', 'light');
+      document.getElementById('themeToggle').textContent = "🌙";
+    } else {
+      document.body.classList.add('dark-mode');
+      localStorage.setItem('theme', 'dark');
+      document.getElementById('themeToggle').textContent = "☀️";
+    }
+  }
+
+  // Set initial theme based on saved preference or system default.
+  function setInitialTheme() {
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme) {
+      if (storedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('themeToggle').textContent = "☀️";
+      } else {
+        document.body.classList.remove('dark-mode');
+        document.getElementById('themeToggle').textContent = "🌙";
+      }
+    } else {
+      // Use browser preference.
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (prefersDark) {
+        document.body.classList.add('dark-mode');
+        document.getElementById('themeToggle').textContent = "☀️";
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.body.classList.remove('dark-mode');
+        document.getElementById('themeToggle').textContent = "🌙";
+        localStorage.setItem('theme', 'light');
+      }
+    }
+  }
+  setInitialTheme();
 </script>
 </body>
 </html>
