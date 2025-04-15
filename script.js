@@ -14,19 +14,20 @@ function getTimeOfDayEmoji(value) {
 let dateIdeas = [];
 
 // Function to display ideas.
-function displayIdeas(ideas) {
-    // If ideas isn't an array, set it to an empty array.
-    if (!Array.isArray(ideas)) {
-        ideas = [];
-    }
+// Function to display ideas.
+function displayIdeas(ideas = []) {
+    // If ideas isn't an array, default to an empty array.
+    ideas = Array.isArray(ideas) ? ideas : [];
 
     const ideasList = document.getElementById("ideasList");
     ideasList.innerHTML = "";
 
-    if (ideas.length === 0) {
+    // Use optional chaining or a default with || to avoid errors.
+    if ((ideas || []).length === 0) {
         ideasList.innerHTML = "<p>No ideas found matching your criteria.</p>";
         return;
     }
+
     ideas.forEach((idea, index) => {
         const ideaDiv = document.createElement("div");
         ideaDiv.className = "idea";
@@ -35,16 +36,16 @@ function displayIdeas(ideas) {
         const infoDiv = document.createElement("div");
         infoDiv.className = "info";
         infoDiv.innerHTML = `
-      <strong>${idea.title}</strong>
-      <div class="scores">
-        Money: ${'💰'.repeat(idea.money)},
-        Time: ${'⏳'.repeat(idea.time)},
-        Energy: ${'⚡'.repeat(idea.energy)},
-        Time of Day: ${getTimeOfDayEmoji(idea.timeOfDay)}
-      </div>
-    `;
+          <strong>${idea.title}</strong>
+          <div class="scores">
+            Money: ${'💰'.repeat(idea.money)},
+            Time: ${'⏳'.repeat(idea.time)},
+            Energy: ${'⚡'.repeat(idea.energy)},
+            Time of Day: ${getTimeOfDayEmoji(idea.timeOfDay)}
+          </div>
+        `;
 
-        // Create delete button.
+        // Create delete button (assumes each idea has a unique id).
         const deleteButton = document.createElement("button");
         deleteButton.className = "delete-button";
         deleteButton.textContent = "X";
@@ -92,7 +93,6 @@ document.getElementById("ideaForm").addEventListener("submit", function(e) {
 
     const newIdea = { title, money, time, energy, timeOfDay };
 
-    // Send the new idea to the server.
     fetch('save_date_ideas.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -101,11 +101,10 @@ document.getElementById("ideaForm").addEventListener("submit", function(e) {
         .then(response => response.json())
         .then(result => {
             if (result.status === "success") {
-                dateIdeas = result.ideas;
-                displayIdeas(dateIdeas);
+                // Reload the ideas instead of using result.ideas.
+                loadIdeas();
                 alert("Date idea added!");
                 document.getElementById("ideaForm").reset();
-                // Reset slider outputs to default values.
                 document.getElementById("moneyOutput").textContent = '💰'.repeat(3);
                 document.getElementById("timeOutput").textContent = '⏳'.repeat(3);
                 document.getElementById("energyOutput").textContent = '⚡'.repeat(3);
@@ -114,7 +113,12 @@ document.getElementById("ideaForm").addEventListener("submit", function(e) {
                 alert("Error: " + result.message);
             }
         })
-        .catch(error => console.error('Error saving idea:', error));
+        .catch(error => {
+            console.error('Error saving idea:', error);
+            // Make sure to reset dateIdeas to an empty array on error.
+            dateIdeas = [];
+            displayIdeas(dateIdeas);
+        });
 });
 
 // Handle deletion of an idea.
@@ -129,20 +133,25 @@ function deleteIdea(index) {
         .then(response => response.json())
         .then(result => {
             if (result.status === "success") {
-                dateIdeas = result.ideas;
-                displayIdeas(dateIdeas);
+                // Reload the ideas after deletion.
+                loadIdeas();
             } else {
                 alert("Error: " + result.message);
             }
         })
-        .catch(error => console.error('Error deleting idea:', error));
+        .catch(error => {
+            console.error('Error deleting idea:', error);
+            // Reset dateIdeas to avoid further errors.
+            dateIdeas = [];
+            displayIdeas(dateIdeas);
+        });
 }
 
 // Handle search.
 document.getElementById("searchForm").addEventListener("submit", function(e) {
     e.preventDefault();
 
-    // Make sure dateIdeas is defined as an array
+    // Ensure dateIdeas is defined as an array before filtering.
     if (!Array.isArray(dateIdeas)) {
         dateIdeas = [];
     }
