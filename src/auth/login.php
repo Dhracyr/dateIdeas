@@ -2,6 +2,13 @@
 session_start();
 require 'db_connect.php';
 
+// If request is GET, serve the login HTML.
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    header('Content-Type: text/html');
+    include 'login.html';
+    exit;
+}
+
 // Set header to return JSON.
 header('Content-Type: application/json');
 
