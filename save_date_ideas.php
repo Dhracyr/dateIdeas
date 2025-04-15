@@ -2,24 +2,26 @@
 session_start();
 require 'db_connect.php';
 
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(['status' => 'error', 'message' => 'User not logged in.']);
+    exit;
+}
+
 $userId = $_SESSION['user_id'];
 $newIdea = json_decode(file_get_contents('php://input'), true);
 
-// Retrieve current ideas
-$stmt = $pdo->prepare('SELECT ideas FROM users WHERE id = ?');
-$stmt->execute([$userId]);
-$row = $stmt->fetch();
-$currentIdeas = json_decode($row['ideas'], true);
-if (!$currentIdeas) {
-    $currentIdeas = [];
-}
-$currentIdeas[] = $newIdea;
-
-// Update the user record with new ideas
-$stmt = $pdo->prepare('UPDATE users SET ideas = ? WHERE id = ?');
-if ($stmt->execute([json_encode($currentIdeas), $userId])) {
-    echo json_encode(['status' => 'success', 'ideas' => $currentIdeas]);
+// Insert the new idea into the ideas table
+$stmt = $pdo->prepare("INSERT INTO ideas (user_id, title, money, time, energy, timeOfDay) VALUES (?, ?, ?, ?, ?, ?)");
+if ($stmt->execute([
+    $userId,
+    $newIdea['title'],
+    $newIdea['money'],
+    $newIdea['time'],
+    $newIdea['energy'],
+    $newIdea['timeOfDay']
+])) {
+    echo json_encode(['status' => 'success', 'message' => 'Idea saved successfully.']);
 } else {
-    echo json_encode(['status' => 'error', 'message' => 'Failed to update ideas.']);
+    echo json_encode(['status' => 'error', 'message' => 'Failed to save idea.']);
 }
 ?>

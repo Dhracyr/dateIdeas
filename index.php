@@ -1,9 +1,17 @@
+<?php
+// index.php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+  header("Location: login.php");
+  exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Date Ideas">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="color-scheme" content="dark light">

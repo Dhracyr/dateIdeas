@@ -15,8 +15,14 @@ let dateIdeas = [];
 
 // Function to display ideas.
 function displayIdeas(ideas) {
+    // If ideas isn't an array, set it to an empty array.
+    if (!Array.isArray(ideas)) {
+        ideas = [];
+    }
+
     const ideasList = document.getElementById("ideasList");
     ideasList.innerHTML = "";
+
     if (ideas.length === 0) {
         ideasList.innerHTML = "<p>No ideas found matching your criteria.</p>";
         return;
@@ -42,7 +48,7 @@ function displayIdeas(ideas) {
         const deleteButton = document.createElement("button");
         deleteButton.className = "delete-button";
         deleteButton.textContent = "X";
-        deleteButton.onclick = () => deleteIdea(index);
+        deleteButton.onclick = () => deleteIdea(idea.id);
 
         ideaDiv.appendChild(infoDiv);
         ideaDiv.appendChild(deleteButton);
@@ -55,10 +61,15 @@ function loadIdeas() {
     fetch('get_date_ideas.php')
         .then(response => response.json())
         .then(data => {
-            dateIdeas = data;
+            // Ensure that data is an array; if not, set it to an empty array.
+            dateIdeas = Array.isArray(data) ? data : [];
             displayIdeas(dateIdeas);
         })
-        .catch(error => console.error('Error loading ideas:', error));
+        .catch(error => {
+            console.error('Error loading ideas:', error);
+            dateIdeas = [];
+            displayIdeas(dateIdeas);
+        });
 }
 
 // Load ideas on page load.
@@ -67,6 +78,12 @@ window.addEventListener('load', loadIdeas);
 // Handle idea creation.
 document.getElementById("ideaForm").addEventListener("submit", function(e) {
     e.preventDefault();
+
+    // Ensure dateIdeas is an array.
+    if (!Array.isArray(dateIdeas)) {
+        dateIdeas = [];
+    }
+
     const title = document.getElementById("ideaTitle").value;
     const money = parseInt(document.getElementById("money").value, 10);
     const time = parseInt(document.getElementById("time").value, 10);
@@ -124,6 +141,12 @@ function deleteIdea(index) {
 // Handle search.
 document.getElementById("searchForm").addEventListener("submit", function(e) {
     e.preventDefault();
+
+    // Make sure dateIdeas is defined as an array
+    if (!Array.isArray(dateIdeas)) {
+        dateIdeas = [];
+    }
+
     const availableMoney = parseInt(document.getElementById("searchMoney").value, 10);
     const availableTime = parseInt(document.getElementById("searchTime").value, 10);
     const availableEnergy = parseInt(document.getElementById("searchEnergy").value, 10);

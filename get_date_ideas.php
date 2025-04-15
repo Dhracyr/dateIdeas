@@ -1,12 +1,16 @@
 <?php
-  header('Content-Type: application/json');
-  $file = 'date_ideas.json';
+session_start();
+require 'db_connect.php';
 
-  if (file_exists($file)) {
-      $data = file_get_contents($file);
-      echo $data;
-  } else {
-      // if file does not exist, initialize with an empty JSON array
-      echo json_encode([]);
-  }
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode([]);
+    exit;
+}
+
+$userId = $_SESSION['user_id'];
+$stmt = $pdo->prepare("SELECT title, money, time, energy, timeOfDay FROM ideas WHERE user_id = ?");
+$stmt->execute([$userId]);
+$ideas = $stmt->fetchAll();
+
+echo json_encode($ideas);
 ?>

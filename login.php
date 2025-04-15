@@ -12,7 +12,7 @@ $user = $stmt->fetch();
 
 if ($user && password_verify($password, $user['password_hash'])) {
     $_SESSION['user_id'] = $user['id'];
-    header('Location: index.html');
+    header('Location: index.php');
     exit;
 } else {
     echo 'Incorrect login details.';
