@@ -1,33 +1,35 @@
 <?php
 session_start();
-require 'db_connect.php';  // Your database connection file
+require 'db_connect.php';
 
-// Only proceed if the request method is POST.
+// Set header to return JSON.
+header('Content-Type: application/json');
+
+// Only process POST requests.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    // Option 1: Redirect to login page.
-    header("Location: login.html");
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
     exit;
 }
 
-// Check if both username and password are provided.
-if (!isset($_POST['username']) || !isset($_POST['password'])) {
-    echo json_encode(['status' => 'error', 'message' => 'Username and password are required.']);
+// Retrieve and sanitize inputs.
+$username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
+$password = filter_input(INPUT_POST, 'password');
+
+// Validate input.
+if (empty($username) || empty($password)) {
+    echo json_encode(['status' => 'error', 'message' => 'Please provide both username and password.']);
     exit;
 }
 
-$username = $_POST['username'];
-$password = $_POST['password'];
-
-// Prepare a query to retrieve the user
-$stmt = $pdo->prepare('SELECT id, password_hash FROM users WHERE username = ?');
+// Look up the user using a prepared statement.
+$stmt = $pdo->prepare("SELECT id, password_hash FROM users WHERE username = ?");
 $stmt->execute([$username]);
-$user = $stmt->fetch();
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($user && password_verify($password, $user['password_hash'])) {
     $_SESSION['user_id'] = $user['id'];
-    header('Location: index.php');
-    exit;
+    echo json_encode(['status' => 'success', 'message' => 'Login successful.']);
 } else {
-    echo 'Incorrect login details.';
+    echo json_encode(['status' => 'error', 'message' => 'Incorrect login details.']);
 }
 ?>
