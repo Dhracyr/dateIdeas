@@ -2,18 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register - Date Ideas</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Fade-out effect */
-    @keyframes fadeOut {
-      from { opacity: 1; }
-      to { opacity: 0; }
-    }
-    .fade-out {
-      animation: fadeOut 1s forwards;
-    }
-    /* Shake effect for error */
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
     @keyframes shake {
       0% { transform: translateX(0); }
       20% { transform: translateX(-10px); }
@@ -22,13 +15,12 @@
       80% { transform: translateX(10px); }
       100% { transform: translateX(0); }
     }
-    .shake {
-      animation: shake 0.5s;
-    }
+    .fade-out { animation: fadeOut 1s forwards; }
+    .shake    { animation: shake 0.5s; }
   </style>
 </head>
 <body>
-
+<!-- Dark Mode Toggle -->
 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
 
 <div class="container" id="registerContainer">
@@ -45,80 +37,46 @@
   <div id="message"></div>
   <p>Already have an account? <a href="login.html">Login here</a>.</p>
 </div>
+
 <script>
-  document.getElementById('registerForm').addEventListener('submit', function(e) {
+  // register + animations
+  document.getElementById('registerForm').addEventListener('submit', e => {
     e.preventDefault();
-
-    // Create form data to send to register.php.
-    const formData = new FormData(this);
-
-    fetch('register.php', {
-      method: 'POST',
-      body: formData
-    })
-            .then(response => response.json())
-            .then(result => {
-              const messageEl = document.getElementById('message');
-              const container = document.getElementById('registerContainer');
-              if(result.status === 'success'){
-                messageEl.textContent = 'Registration successful!';
-                // Apply fade-out animation.
-                container.classList.add('fade-out');
-                // Automatically redirect to login page after animation.
-                setTimeout(() => {
-                  window.location.href = 'login.html';
-                }, 1500);
+    const fd = new FormData(e.target);
+    fetch('register.php', { method:'POST', body: fd })
+            .then(r => r.json())
+            .then(res => {
+              const msg = document.getElementById('message'),
+                      cont = document.getElementById('registerContainer');
+              if (res.status === 'success') {
+                msg.textContent = 'Registration successful!';
+                cont.classList.add('fade-out');
+                setTimeout(() => location.href = 'login.html', 1500);
               } else {
-                messageEl.textContent = 'Error: ' + result.message;
-                // Apply a shake animation to indicate error.
-                container.classList.add('shake');
-                setTimeout(() => container.classList.remove('shake'), 500);
+                msg.textContent = 'Error: ' + res.message;
+                cont.classList.add('shake');
+                setTimeout(() => cont.classList.remove('shake'), 500);
               }
-            })
-            .catch(error => {
-              console.error('Error:', error);
-            });
+            }).catch(console.error);
   });
-</script>
-<script>
-  function toggleTheme() {
-    if (document.body.classList.contains('dark-mode')) {
-      document.body.classList.remove('dark-mode');
-      localStorage.setItem('theme', 'light');
-      document.getElementById('themeToggle').textContent = "🌙";
-    } else {
-      document.body.classList.add('dark-mode');
-      localStorage.setItem('theme', 'dark');
-      document.getElementById('themeToggle').textContent = "☀️";
-    }
-  }
 
-  // Set initial theme based on saved preference or system default.
-  function setInitialTheme() {
-    const storedTheme = localStorage.getItem('theme');
-    if (storedTheme) {
-      if (storedTheme === 'dark') {
-        document.body.classList.add('dark-mode');
-        document.getElementById('themeToggle').textContent = "☀️";
-      } else {
-        document.body.classList.remove('dark-mode');
-        document.getElementById('themeToggle').textContent = "🌙";
-      }
-    } else {
-      // Use browser preference.
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (prefersDark) {
-        document.body.classList.add('dark-mode');
-        document.getElementById('themeToggle').textContent = "☀️";
-        localStorage.setItem('theme', 'dark');
-      } else {
-        document.body.classList.remove('dark-mode');
-        document.getElementById('themeToggle').textContent = "🌙";
-        localStorage.setItem('theme', 'light');
-      }
-    }
+  // toggle + initial theme
+  function toggleTheme() {
+    document.body.classList.toggle('dark-mode');
+    const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+    localStorage.setItem('theme', theme);
+    document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
   }
-  setInitialTheme();
+  (function setInitialTheme(){
+    const stored = localStorage.getItem('theme'),
+            prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (stored === 'dark' || (!stored && prefersDark)) {
+      document.body.classList.add('dark-mode');
+      document.getElementById('themeToggle').textContent = '☀️';
+    } else {
+      document.getElementById('themeToggle').textContent = '🌙';
+    }
+  })();
 </script>
 </body>
 </html>

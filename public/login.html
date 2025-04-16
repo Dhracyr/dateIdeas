@@ -2,18 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - Date Ideas</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Fade-out effect */
-    @keyframes fadeOut {
-      from { opacity: 1; }
-      to { opacity: 0; }
-    }
-    .fade-out {
-      animation: fadeOut 1s forwards;
-    }
-    /* Shake effect for errors */
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
     @keyframes shake {
       0% { transform: translateX(0); }
       20% { transform: translateX(-10px); }
@@ -22,101 +15,68 @@
       80% { transform: translateX(10px); }
       100% { transform: translateX(0); }
     }
-    .shake {
-      animation: shake 0.5s;
-    }
+    .fade-out { animation: fadeOut 1s forwards; }
+    .shake    { animation: shake 0.5s; }
   </style>
 </head>
 <body>
-  <!-- Dark Mode Toggle Button -->
-  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+<!-- Dark Mode Toggle -->
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
 
-  <div class="container" id="loginContainer">
-    <h2>Login</h2>
-    <form id="loginForm">
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username" required>
+<div class="container" id="loginContainer">
+  <h2>Login</h2>
+  <form id="loginForm">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
 
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
 
-      <button type="submit">Login</button>
-    </form>
-    <div id="loginMessage"></div>
-    <p>Don't have an account? <a href="register.html">Register here</a>.</p>
-  </div>
+    <button type="submit">Login</button>
+  </form>
+  <div id="loginMessage"></div>
+  <p>Don't have an account? <a href="register.html">Register here</a>.</p>
+</div>
+
 <script>
-  document.getElementById('loginForm').addEventListener('submit', function(e) {
+  // login + animations
+  document.getElementById('loginForm').addEventListener('submit', e => {
     e.preventDefault();
-    // Create form data to send to login.php.
-    const formData = new FormData(this);
-
-    fetch('login.php', {
-      method: 'POST',
-      body: formData
-    })
-            .then(response => response.json())
+    const formData = new FormData(e.target);
+    fetch('login.php', { method:'POST', body: formData })
+            .then(r => r.json())
             .then(result => {
-              const messageEl = document.getElementById('loginMessage');
-              const container = document.getElementById('loginContainer');
+              const msg = document.getElementById('loginMessage'),
+                      cont = document.getElementById('loginContainer');
               if (result.status === 'success') {
-                messageEl.textContent = 'Login successful!';
-                container.classList.add('fade-out');
-                // After fade-out, redirect to index.php.
-                setTimeout(() => {
-                  window.location.href = 'index.php';
-                }, 1500);
+                msg.textContent = 'Login successful!';
+                cont.classList.add('fade-out');
+                setTimeout(() => location.href = 'index.php', 1500);
               } else {
-                messageEl.textContent = 'Error: ' + result.message;
-                // Apply shake effect to show error.
-                container.classList.add('shake');
-                setTimeout(() => container.classList.remove('shake'), 500);
+                msg.textContent = 'Error: ' + result.message;
+                cont.classList.add('shake');
+                setTimeout(() => cont.classList.remove('shake'), 500);
               }
-            })
-            .catch(error => {
-              console.error('Error:', error);
-            });
+            }).catch(console.error);
   });
-</script>
-<script>
-  function toggleTheme() {
-    if (document.body.classList.contains('dark-mode')) {
-      document.body.classList.remove('dark-mode');
-      localStorage.setItem('theme', 'light');
-      document.getElementById('themeToggle').textContent = "🌙";
-    } else {
-      document.body.classList.add('dark-mode');
-      localStorage.setItem('theme', 'dark');
-      document.getElementById('themeToggle').textContent = "☀️";
-    }
-  }
 
-  // Set initial theme based on saved preference or system default.
-  function setInitialTheme() {
-    const storedTheme = localStorage.getItem('theme');
-    if (storedTheme) {
-      if (storedTheme === 'dark') {
-        document.body.classList.add('dark-mode');
-        document.getElementById('themeToggle').textContent = "☀️";
-      } else {
-        document.body.classList.remove('dark-mode');
-        document.getElementById('themeToggle').textContent = "🌙";
-      }
-    } else {
-      // Use browser preference.
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (prefersDark) {
-        document.body.classList.add('dark-mode');
-        document.getElementById('themeToggle').textContent = "☀️";
-        localStorage.setItem('theme', 'dark');
-      } else {
-        document.body.classList.remove('dark-mode');
-        document.getElementById('themeToggle').textContent = "🌙";
-        localStorage.setItem('theme', 'light');
-      }
-    }
+  // toggle + initial theme
+  function toggleTheme() {
+    document.body.classList.toggle('dark-mode');
+    const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+    localStorage.setItem('theme', theme);
+    document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
   }
-  setInitialTheme();
+  (function setInitialTheme(){
+    const stored = localStorage.getItem('theme'),
+            prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (stored === 'dark' || (!stored && prefersDark)) {
+      document.body.classList.add('dark-mode');
+      document.getElementById('themeToggle').textContent = '☀️';
+    } else {
+      document.getElementById('themeToggle').textContent = '🌙';
+    }
+  })();
 </script>
 </body>
 </html>
