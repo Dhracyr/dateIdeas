@@ -11,16 +11,37 @@ if (!isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- iOS Web App Meta -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Date Ideas">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="color-scheme" content="dark light">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+
     <title>Date Ideas</title>
     <!-- Google Font for mobile screens -->
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+
+    <!-- (Optional) Android/Chrome PWA manifest -->
+    <link rel="manifest" href="/manifest.json">
     <!-- External CSS -->
     <link rel="stylesheet" href="style.css">
+    <style>
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-10px); }
+            80% { transform: translateX(10px); }
+            100% { transform: translateX(0); }
+        }
+        .fade-out { animation: fadeOut 1s forwards; }
+        .shake    { animation: shake 0.5s; }
+    </style>
+
+
 </head>
 <body>
 <!-- Dark mode toggle icon -->
