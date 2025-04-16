@@ -237,6 +237,7 @@ input[type="range"]::-moz-range-thumb:hover {
     top: 20px;
     right: 20px;
     margin: 0;
+    z-index: 1000;
     background: var(--accent-color);
     border: none;
     border-radius: 50%;
