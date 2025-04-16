@@ -1,0 +1,264 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+/* CSS Variables for light mode */
+:root {
+    --background: #FFF7F9;
+    --container-bg: #ffffff;
+    --text-color: #333;
+    --accent-color: #ff69b4;
+    --header-bg: linear-gradient(90deg, #FFC1CC, #FFB7CE);
+    --box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode variables (applied when .dark-mode is on body) */
+body.dark-mode {
+    --background: #121212;
+    --container-bg: #1e1e1e;
+    --text-color: #f0f0f0;
+    --accent-color: #ff79c6;
+    --header-bg: linear-gradient(90deg, #d23669, #b82a58);
+    --box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Global Styles */
+body {
+    font-family: 'Fredoka One', cursive, sans-serif;
+    background: var(--background);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: background 0.3s, color 0.3s;
+    position: relative;
+}
+
+@media (max-width: 480px) {
+    body {
+        font-family: 'Fredoka One', cursive, sans-serif;
+    }
+}
+
+header {
+    background: var(--header-bg);
+    width: 100%;
+    padding: 30px 0;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 8px rgba(255, 182, 193, 0.5);
+    transition: background 0.3s;
+}
+
+h1 {
+    font-size: 2.5em;
+    margin: 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.container {
+    max-width: 600px;
+    width: 100%;
+    background: var(--container-bg);
+    padding: 20px;
+    box-shadow: var(--box-shadow);
+    border-radius: 20px;
+    margin-bottom: 20px;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    border: 2px solid var(--accent-color);
+    border-radius: 10px;
+    background: var(--background);
+    color: var(--text-color);
+}
+
+/* Updated Slider Styling for a Cuter/Kawaii Look */
+
+/* Slider Track */
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 16px; /* Increased track height */
+    border-radius: 8px;
+    background: #ffe6f0; /* Light pastel pink */
+    outline: none;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+    margin: 10px 0;
+}
+
+input[type="range"]:hover {
+    opacity: 1;
+}
+
+/* WebKit Browsers (Chrome, Safari, Opera) */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #ffb7ce;
+    border: 3px solid #ff69b4;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    background: #ffa6b9;
+}
+
+/* Mozilla Firefox */
+input[type="range"]::-moz-range-thumb {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #ffb7ce;
+    border: 3px solid #ff69b4;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+    background: #ffa6b9;
+}
+
+input[type="range"]::-moz-range-track {
+    height: 16px;
+    border-radius: 8px;
+    background: #ffe6f0;
+}
+
+/* Internet Explorer/Edge */
+input[type="range"]::-ms-thumb {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #ffb7ce;
+    border: 3px solid #ff69b4;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    transition: background 0.2s ease, transform 0.2s ease;
+    /* IE may not support margin-top on the thumb, but the effect is similar */
+}
+
+input[type="range"]::-ms-track {
+    width: 100%;
+    height: 16px;
+    border-radius: 8px;
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+}
+
+input[type="range"]::-ms-fill-lower {
+    background: #ffe6f0;
+    border-radius: 8px;
+}
+
+input[type="range"]::-ms-fill-upper {
+    background: #ffe6f0;
+    border-radius: 8px;
+}
+
+/* Slider Labels */
+.slider-labels {
+    text-align: center;
+    font-size: 1.2em;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    color: var(--accent-color);
+}
+
+/* Button Styling */
+button {
+    padding: 10px 20px;
+    margin-top: 15px;
+    background-color: var(--accent-color);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1em;
+    box-shadow: 0 2px 4px rgba(255, 105, 180, 0.5);
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background-color: #ff69b4;
+    transform: scale(1.05);
+}
+
+/* Displaying Each Idea */
+.idea {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed var(--accent-color);
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.scores {
+    font-size: 0.9em;
+    color: var(--accent-color);
+}
+
+/* Delete Button for Each Idea */
+.delete-button {
+    background-color: transparent;
+    border: 2px solid var(--accent-color);
+    border-radius: 5px;
+    color: var(--accent-color);
+    font-weight: bold;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: background-color 0.2s;
+}
+
+.delete-button:hover {
+    background-color: var(--accent-color);
+    color: #fff;
+}
+
+/* Dark Mode Toggle Button (top-right corner) */
+.theme-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--accent-color);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.5em;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    transition: background 0.3s;
+}
