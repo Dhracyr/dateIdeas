@@ -20,26 +20,35 @@
   </style>
 </head>
 <body>
-<!-- Dark Mode Toggle -->
+<!-- Dark Mode Toggle (fixed via .theme-toggle in style.css) -->
 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
 
+<!-- Add a hero banner to set it apart -->
+<div class="container" style="text-align:center; margin-top: 30px; background: var(--header-bg); color:#fff;">
+  <h2 style="margin-bottom: 10px;">🚀 Join Date Ideas!</h2>
+  <p style="opacity: 0.9; margin-bottom: 20px;">Create your account and start discovering fun date ideas.</p>
+</div>
+
+<!-- Main registration container -->
 <div class="container" id="registerContainer">
-  <h2>Register</h2>
+  <h2>Create Account</h2>
   <form id="registerForm">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required>
+    <label for="username">Choose a Username</label>
+    <input type="text" id="username" name="username" placeholder="e.g. GichtGriffel420" required>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
+    <label for="password">Pick a Password</label>
+    <input type="password" id="password" name="password" placeholder="••••••••" required>
 
-    <button type="submit">Register</button>
+    <button type="submit">Sign Up</button>
   </form>
-  <div id="message"></div>
-  <p>Already have an account? <a href="login.html">Login here</a>.</p>
+  <div id="message" style="margin-top:15px;"></div>
+  <p style="margin-top: 25px; text-align:center;">
+    Already registered? <a href="login.html" style="color: var(--accent-color); font-weight:600;">Log in here</a>.
+  </p>
 </div>
 
 <script>
-  // register + animations
+  // handle registration + animations
   document.getElementById('registerForm').addEventListener('submit', e => {
     e.preventDefault();
     const fd = new FormData(e.target);
@@ -49,7 +58,7 @@
               const msg = document.getElementById('message'),
                       cont = document.getElementById('registerContainer');
               if (res.status === 'success') {
-                msg.textContent = 'Registration successful!';
+                msg.textContent = 'Welcome aboard! Redirecting…';
                 cont.classList.add('fade-out');
                 setTimeout(() => location.href = 'login.html', 1500);
               } else {
@@ -60,7 +69,7 @@
             }).catch(console.error);
   });
 
-  // toggle + initial theme
+  // dark‑mode toggle & init
   function toggleTheme() {
     document.body.classList.toggle('dark-mode');
     const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
